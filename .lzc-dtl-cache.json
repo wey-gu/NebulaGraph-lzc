@@ -9,9 +9,9 @@
     "gpu_accel"
   ],
   "subdomain": "nebula",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "iconPath": "icon.png",
-  "lastRouteType": "from_compose",
+  "lastRouteType": "http",
   "port_mappings": {
     "metad0_9559:9559": {
       "use": false,
@@ -47,7 +47,7 @@
     "graphd_19670:19670": {
       "use": false
     },
-    "nebulagraph_gephi_7005:8501": {
+    "nebulagraph_gephi_8501:8501": {
       "use": true,
       "type": "port",
       "path": "/",
@@ -59,17 +59,12 @@
       "type": "port",
       "protocol": "tcp"
     },
-    "portal_7006:80": {
-      "use": true,
-      "type": "http",
-      "path": "/",
-      "targetPath": "/"
-    },
     "portal_7008:7008": {
       "use": true,
-      "type": "http",
+      "type": "port",
       "path": "/",
-      "targetPath": "/"
+      "targetPath": "/",
+      "protocol": "tcp"
     }
   },
   "image_docker.io_vesoft_nebula-metad_v3": {
@@ -104,8 +99,15 @@
     "originalImage": "weygu/nebula-storage-activator:v3",
     "push": false
   },
-  "image_weygu_nebulagraph-lzc-portal_v0.1.0": {
-    "originalImage": "weygu/nebulagraph-lzc-portal:v0.1.0",
+  "lastPortProtocol": "tcp",
+  "lastPort": "7008",
+  "lastService": "portal",
+  "lastHttpPath": "/",
+  "lastHttpService": "portal",
+  "lastHttpPort": "7008",
+  "lastHttpTargetPath": "/",
+  "image_weygu_nebulagraph-lzc-portal_v0.3.0": {
+    "originalImage": "weygu/nebulagraph-lzc-portal:v0.3.0",
     "push": false
   }
 }
