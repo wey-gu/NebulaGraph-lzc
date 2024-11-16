@@ -1,0 +1,133 @@
+services:
+  metad0:
+    image: docker.io/vesoft/nebula-metad:v3
+    environment:
+      USER: root
+    command: "--meta_server_addrs=metad0.cloud.lazycat.app.nebulagraph.lzcapp:9559 --local_ip=metad0.cloud.lazycat.app.nebulagraph.lzcapp --ws_ip=metad0.cloud.lazycat.app.nebulagraph.lzcapp --port=9559 --ws_http_port=19559 --data_path=/data/meta --logtostderr=true --redirect_stdout=false --v=0 --minloglevel=0"
+    healthcheck:
+      test: ["CMD", "curl", "-sf", "http://metad0.cloud.lazycat.app.nebulagraph.lzcapp:19559/status"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 20s
+    ports:
+      - 9559:9559
+      - 19559:19559
+      - 19560:19560
+    volumes:
+      - ./data/meta0:/data/meta
+      # - ./logs/meta0:/logs
+    networks:
+      - nebula-net
+    restart: on-failure
+    cap_add:
+      - SYS_PTRACE
+
+  storaged0:
+    image: docker.io/vesoft/nebula-storaged:v3
+    environment:
+      USER: root
+    command: "--meta_server_addrs=metad0.cloud.lazycat.app.nebulagraph.lzcapp:9559 --local_ip=storaged0.cloud.lazycat.app.nebulagraph.lzcapp --ws_ip=storaged0.cloud.lazycat.app.nebulagraph.lzcapp --port=9779 --ws_http_port=19779 --data_path=/data/storage --logtostderr=true --redirect_stdout=false --v=0 --minloglevel=0"
+    depends_on:
+      - metad0
+    healthcheck:
+      test: ["CMD", "curl", "-sf", "http://storaged0.cloud.lazycat.app.nebulagraph.lzcapp:19779/status"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 20s
+    ports:
+      - 9779:9779
+      - 19779:19779
+      - 19780:19780
+    volumes:
+      - ./data/storage0:/data/storage
+      # - ./logs/storage0:/logs
+    networks:
+      - nebula-net
+    restart: on-failure
+    cap_add:
+      - SYS_PTRACE
+
+  graphd:
+    image: docker.io/vesoft/nebula-graphd:v3
+    environment:
+      USER: root
+    command: "--meta_server_addrs=metad0.cloud.lazycat.app.nebulagraph.lzcapp:9559 --port=9669 --local_ip=graphd.cloud.lazycat.app.nebulagraph.lzcapp --ws_ip=graphd.cloud.lazycat.app.nebulagraph.lzcapp --ws_http_port=19669 --logtostderr=true --redirect_stdout=false --v=0 --minloglevel=0"
+    depends_on:
+      - storaged0
+    healthcheck:
+      test: ["CMD", "curl", "-sf", "http://graphd.cloud.lazycat.app.nebulagraph.lzcapp:19669/status"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 20s
+    ports:
+      - 9669:9669
+      - 19669:19669
+      - 19670:19670
+    # volumes:
+    #   - ./logs/graph:/logs
+    networks:
+      - nebula-net
+    restart: on-failure
+    cap_add:
+      - SYS_PTRACE
+
+  storage-activator:
+    image: weygu/nebula-storage-activator:v3
+    environment:
+      GRAPHD_ADDR: graphd.cloud.lazycat.app.nebulagraph.lzcapp
+      STORAGED_ADDR: storaged0.cloud.lazycat.app.nebulagraph.lzcapp
+    depends_on:
+      - graphd
+    networks:
+      - nebula-net
+
+  # studio:
+  #   image: vesoft/nebula-graph-studio:v3
+  #   environment:
+  #     USER: root
+  #   ports:
+  #     - 7001:7001
+  #   healthcheck:
+  #     test: ["CMD", "netstat", "-plunt", "| grep 7001"]
+  #     interval: 30s
+  #     timeout: 10s
+  #     retries: 3
+  #     start_period: 20s
+  #   depends_on:
+  #     - graphd
+  #   networks:
+  #     - nebula-net
+
+  nebulagraph_gephi:
+    image: weygu/nebulagraph-gephi-exchange:v0.1
+    environment:
+      USER: root
+    ports:
+      - 7005:8501
+    depends_on:
+      - graphd
+    networks:
+      - nebula-net
+    pull_policy: always
+
+  studio:
+    image: vesoft/nebula-graph-studio:v3
+    environment:
+      USER: root
+    ports:
+      - 7001:7001
+    healthcheck:
+      test: ["CMD", "netstat", "-plunt", "| grep 7001"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 20s
+    depends_on:
+      - graphd
+    networks:
+      - nebula-net
+networks:
+  nebula-net:

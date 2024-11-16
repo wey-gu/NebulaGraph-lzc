@@ -1,0 +1,95 @@
+{
+  "name": "NebulaGraph",
+  "package": "cloud.lazycat.app.nebulagraph",
+  "description": "Graph in homelab",
+  "homepage": "siwei.io",
+  "author": "NebulaGraph",
+  "app_features": [
+    "background_task",
+    "gpu_accel"
+  ],
+  "subdomain": "nebula",
+  "version": "0.1.0",
+  "iconPath": "icon.png",
+  "lastRouteType": "from_compose",
+  "port_mappings": {
+    "metad0_9559:9559": {
+      "use": false,
+      "type": "port",
+      "protocol": "tcp"
+    },
+    "metad0_19559:19559": {
+      "use": false,
+      "type": "http",
+      "path": "/meta_status",
+      "targetPath": "/status"
+    },
+    "metad0_19560:19560": {
+      "use": false
+    },
+    "storaged0_9779:9779": {
+      "use": false
+    },
+    "storaged0_19779:19779": {
+      "use": false
+    },
+    "storaged0_19780:19780": {
+      "use": false
+    },
+    "graphd_9669:9669": {
+      "use": true,
+      "type": "port",
+      "protocol": "tcp"
+    },
+    "graphd_19669:19669": {
+      "use": false
+    },
+    "graphd_19670:19670": {
+      "use": false
+    },
+    "nebulagraph_gephi_7005:8501": {
+      "use": true,
+      "type": "port",
+      "path": "/",
+      "targetPath": "/",
+      "protocol": "tcp"
+    },
+    "studio_7001:7001": {
+      "use": true,
+      "type": "port",
+      "protocol": "tcp"
+    }
+  },
+  "image_docker.io_vesoft_nebula-metad_v3": {
+    "originalImage": "docker.io/vesoft/nebula-metad:v3",
+    "push": false
+  },
+  "metad0_volume_/data/meta_action": "emptyDir",
+  "metad0_volume_/data/meta_location": "app_data",
+  "image_docker.io_vesoft_nebula-storaged_v3": {
+    "originalImage": "docker.io/vesoft/nebula-storaged:v3",
+    "push": false
+  },
+  "storaged0_volume_/data/storage_action": "emptyDir",
+  "storaged0_volume_/data/storage_location": "app_data",
+  "image_docker.io_vesoft_nebula-graphd_v3": {
+    "originalImage": "docker.io/vesoft/nebula-graphd:v3",
+    "push": false
+  },
+  "image_docker.io_vesoft_nebula-console_v3": {
+    "originalImage": "docker.io/vesoft/nebula-console:v3",
+    "push": false
+  },
+  "image_vesoft_nebula-graph-studio_v3": {
+    "originalImage": "vesoft/nebula-graph-studio:v3",
+    "push": false
+  },
+  "image_weygu_nebulagraph-gephi-exchange_v0.1": {
+    "originalImage": "weygu/nebulagraph-gephi-exchange:v0.1",
+    "push": false
+  },
+  "image_weygu_nebula-storage-activator_v3": {
+    "originalImage": "weygu/nebula-storage-activator:v3",
+    "push": false
+  }
+}
