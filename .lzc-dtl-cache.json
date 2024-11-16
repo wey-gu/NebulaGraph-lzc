@@ -2,14 +2,14 @@
   "name": "NebulaGraph",
   "package": "cloud.lazycat.app.nebulagraph",
   "description": "Graph in homelab",
-  "homepage": "siwei.io",
-  "author": "NebulaGraph",
+  "homepage": "https://www.siwei.io",
+  "author": "Siwei GU",
   "app_features": [
     "background_task",
     "gpu_accel"
   ],
   "subdomain": "nebula",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "iconPath": "icon.png",
   "lastRouteType": "from_compose",
   "port_mappings": {
@@ -58,6 +58,18 @@
       "use": true,
       "type": "port",
       "protocol": "tcp"
+    },
+    "portal_7006:80": {
+      "use": true,
+      "type": "http",
+      "path": "/",
+      "targetPath": "/"
+    },
+    "portal_7008:7008": {
+      "use": true,
+      "type": "http",
+      "path": "/",
+      "targetPath": "/"
     }
   },
   "image_docker.io_vesoft_nebula-metad_v3": {
