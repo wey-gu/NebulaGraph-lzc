@@ -1,0 +1,80 @@
+lzc-sdk-version: "0.1"
+name: NebulaGraph
+package: cloud.lazycat.app.nebulagraph
+version: 0.1.0
+description: Graph in homelab
+homepage: siwei.io
+author: NebulaGraph
+application:
+  subdomain: nebula
+  background_task: true
+  multi_instance: false
+  gpu_accel: true
+  kvm_accel: false
+  usb_accel: false
+  routes:
+    - /=file:///lzcapp/pkg/content/public/index.html
+  ingress:
+    - protocol: tcp
+      port: 9669
+      service: graphd
+    - protocol: tcp
+      port: 8501
+      service: nebulagraph_gephi
+    - protocol: tcp
+      port: 7001
+      service: studio
+services:
+  metad0:
+    image: docker.io/vesoft/nebula-metad:v3
+    environment:
+      - USER=root
+    command: --meta_server_addrs=metad0.cloud.lazycat.app.nebulagraph.lzcapp:9559
+      --local_ip=metad0.cloud.lazycat.app.nebulagraph.lzcapp
+      --ws_ip=metad0.cloud.lazycat.app.nebulagraph.lzcapp --port=9559
+      --ws_http_port=19559 --data_path=/data/meta --logtostderr=true
+      --redirect_stdout=false --v=0 --minloglevel=0
+    binds:
+      - /lzcapp/var/meta:/data/meta
+  storaged0:
+    image: docker.io/vesoft/nebula-storaged:v3
+    environment:
+      - USER=root
+    command: --meta_server_addrs=metad0.cloud.lazycat.app.nebulagraph.lzcapp:9559
+      --local_ip=storaged0.cloud.lazycat.app.nebulagraph.lzcapp
+      --ws_ip=storaged0.cloud.lazycat.app.nebulagraph.lzcapp --port=9779
+      --ws_http_port=19779 --data_path=/data/storage --logtostderr=true
+      --redirect_stdout=false --v=0 --minloglevel=0
+    depends_on:
+      - metad0
+    binds:
+      - /lzcapp/var/storage:/data/storage
+  graphd:
+    image: docker.io/vesoft/nebula-graphd:v3
+    environment:
+      - USER=root
+    command: --meta_server_addrs=metad0.cloud.lazycat.app.nebulagraph.lzcapp:9559
+      --port=9669 --local_ip=graphd.cloud.lazycat.app.nebulagraph.lzcapp
+      --ws_ip=graphd.cloud.lazycat.app.nebulagraph.lzcapp --ws_http_port=19669
+      --logtostderr=true --redirect_stdout=false --v=0 --minloglevel=0
+    depends_on:
+      - storaged0
+  storage-activator:
+    image: weygu/nebula-storage-activator:v3
+    environment:
+      - GRAPHD_ADDR=graphd.cloud.lazycat.app.nebulagraph.lzcapp
+      - STORAGED_ADDR=storaged0.cloud.lazycat.app.nebulagraph.lzcapp
+    depends_on:
+      - graphd
+  nebulagraph_gephi:
+    image: weygu/nebulagraph-gephi-exchange:v0.1
+    environment:
+      - USER=root
+    depends_on:
+      - graphd
+  studio:
+    image: vesoft/nebula-graph-studio:v3
+    environment:
+      - USER=root
+    depends_on:
+      - graphd
