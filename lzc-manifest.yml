@@ -1,10 +1,10 @@
 lzc-sdk-version: "0.1"
 name: NebulaGraph
 package: cloud.lazycat.app.nebulagraph
-version: 0.1.0
+version: 0.3.0
 description: Graph in homelab
-homepage: siwei.io
-author: NebulaGraph
+homepage: https://www.siwei.io
+author: Siwei GU
 application:
   subdomain: nebula
   background_task: true
@@ -13,7 +13,7 @@ application:
   kvm_accel: false
   usb_accel: false
   routes:
-    - /=file:///lzcapp/pkg/content/public/index.html
+    - /=http://portal.cloud.lazycat.app.nebulagraph.lzcapp:7008/
   ingress:
     - protocol: tcp
       port: 9669
@@ -24,6 +24,9 @@ application:
     - protocol: tcp
       port: 7001
       service: studio
+    - protocol: tcp
+      port: 7008
+      service: portal
 services:
   metad0:
     image: docker.io/vesoft/nebula-metad:v3
@@ -76,5 +79,9 @@ services:
     image: vesoft/nebula-graph-studio:v3
     environment:
       - USER=root
+    depends_on:
+      - graphd
+  portal:
+    image: weygu/nebulagraph-lzc-portal:v0.3.0
     depends_on:
       - graphd

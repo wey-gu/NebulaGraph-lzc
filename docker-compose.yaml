@@ -89,7 +89,7 @@ services:
     environment:
       USER: root
     ports:
-      - 7005:8501
+      - 8501:8501
     depends_on:
       - graphd
     networks:
@@ -114,7 +114,7 @@ services:
       - nebula-net
 
   portal:
-    image: weygu/nebulagraph-lzc-portal:v0.1.0
+    image: weygu/nebulagraph-lzc-portal:v0.3.0
     ports:
       - 7008:7008
     depends_on:

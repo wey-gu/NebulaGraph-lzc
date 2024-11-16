@@ -134,7 +134,7 @@ export function NebulaGraphPortal() {
                 交互式探索和高度可定制的视觉样式。
               </p>
               <motion.a
-                href={`http://${window.location.hostname}:7005`}
+                href={`http://${window.location.hostname}:8501`}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="inline-flex items-center px-6 py-3 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors"
