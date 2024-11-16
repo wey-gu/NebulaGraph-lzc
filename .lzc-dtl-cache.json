@@ -91,5 +91,9 @@
   "image_weygu_nebula-storage-activator_v3": {
     "originalImage": "weygu/nebula-storage-activator:v3",
     "push": false
+  },
+  "image_weygu_nebulagraph-lzc-portal_v0.1.0": {
+    "originalImage": "weygu/nebulagraph-lzc-portal:v0.1.0",
+    "push": false
   }
 }

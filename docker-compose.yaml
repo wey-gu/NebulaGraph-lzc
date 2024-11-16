@@ -129,5 +129,15 @@ services:
       - graphd
     networks:
       - nebula-net
+
+  portal:
+    image: weygu/nebulagraph-lzc-portal:v0.1.0
+    ports:
+      - 7006:80
+    depends_on:
+      - graphd
+    networks:
+      - nebula-net
+
 networks:
   nebula-net:
